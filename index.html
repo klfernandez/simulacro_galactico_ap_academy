@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#040818">
+<title>Admisión Galáctica · AP ACADEMY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="fx"></canvas>
+
+<div id="app">
+
+  <!-- ============ MENÚ ============ -->
+  <section id="menu" class="screen scroll">
+    <div class="menu-card">
+      <div class="brand"><img src="logo.png" alt="AP ACADEMY"><div><b>AP ACADEMY</b><small>Preparación para el examen de admisión</small></div></div>
+      <h1><span>ADMISIÓN</span> GALÁCTICA</h1>
+      <p class="tagline">Simulacro del Primer Parcial · <b>dispara a la respuesta correcta</b> y defiende la galaxia con tu mente.</p>
+
+      <div class="block"><label for="inName">Nombre de piloto</label><input id="inName" maxlength="40" placeholder="Escribe tu nombre" autocomplete="off"></div>
+      <div class="block"><label>Nivel</label><div class="cards" id="levels"></div></div>
+      <div class="block"><label>Modo de vuelo</label><div class="cards" id="modes"></div></div>
+      <div class="block"><label>Sectores (materias)</label><div class="chips" id="sectors"></div></div>
+
+      <button id="btnStart" class="btn big" type="button"><span data-ic="rocket"></span> DESPEGAR</button>
+      <div id="best" class="best"></div>
+
+      <details class="how">
+        <summary>¿Cómo se juega?</summary>
+        <ul>
+          <li><b>Lee la pregunta</b> arriba. Las alternativas bajan como cápsulas.</li>
+          <li><b>Mueve tu nave</b> (← → o arrastra el dedo) y <b>dispara</b> (ESPACIO, clic o botón FUEGO) a la cápsula que creas correcta.</li>
+          <li>Si aciertas, sumas puntos y combos. Si fallas pierdes un escudo <span data-ic="heart"></span> y verás la explicación.</li>
+          <li>Si una cápsula llega a la zona de peligro, se acabó el tiempo de esa pregunta.</li>
+          <li>Las preguntas de <b>desarrollo</b> se resuelven en tu cuaderno: dispara para ver la respuesta modelo y autoevalúate.</li>
+          <li>Atajos: <kbd>1</kbd>–<kbd>5</kbd> apuntar a una cápsula · <kbd>P</kbd> pausa · <kbd>M</kbd> sonido.</li>
+        </ul>
+      </details>
+
+      <footer><span data-ic="phone"></span> Informes e inscripciones: <b>+591 79592149</b> · AP ACADEMY<br>
+        Elaborado por <b>Lic. Kate L. Fernandez Saavedra</b> · 77580155 · Informática y Docente de Lenguaje</footer>
+    </div>
+  </section>
+
+  <!-- ============ JUEGO ============ -->
+  <section id="game" class="screen" hidden>
+    <header class="hud">
+      <div class="hl"><div class="sec" id="hSec"></div><div class="qn" id="hQn"></div></div>
+      <div class="hc"><div class="score" id="hScore">0</div><div class="combo" id="hCombo"></div></div>
+      <div class="hr"><div class="lives" id="hLives"></div><button class="ib" id="btnPause" type="button" aria-label="Pausa"></button><button class="ib" id="btnMute" type="button" aria-label="Sonido"></button></div>
+    </header>
+    <div class="mprog"><i id="mProg"></i></div>
+
+    <div class="qpanel" id="qpanel">
+      <div class="qmeta" id="qMeta"></div>
+      <div class="qtext" id="qText"></div>
+      <div id="qFig"></div>
+      <div class="model" id="qModel" hidden></div>
+    </div>
+    <div class="tbar"><i id="tBar"></i></div>
+
+    <div class="arena" id="arena">
+      <div id="pods"></div>
+      <div class="danger"><span>ZONA DE PELIGRO</span></div>
+      <div id="floaty"></div>
+    </div>
+
+    <div class="pad" id="pad">
+      <button type="button" id="bL" tabindex="-1" aria-label="Izquierda"><span data-ic="left"></span></button>
+      <button type="button" id="bF" tabindex="-1">FUEGO</button>
+      <button type="button" id="bR" tabindex="-1" aria-label="Derecha"><span data-ic="right"></span></button>
+    </div>
+    <div class="kbd" id="kbd"><kbd>←</kbd><kbd>→</kbd> mover · <kbd>ESPACIO</kbd> / clic disparar · <kbd>1</kbd>-<kbd>5</kbd> apuntar · <kbd>P</kbd> pausa</div>
+
+    <div class="feedback" id="fb" hidden></div>
+  </section>
+
+  <!-- ============ RESULTADOS ============ -->
+  <section id="end" class="screen scroll" hidden>
+    <div class="end-card">
+      <div class="rankbadge" id="eIcon"></div>
+      <h2 id="eTitle"></h2>
+      <p class="esub" id="eSub"></p>
+      <div class="kpis" id="eKpis"></div>
+      <div class="panel"><h3>Desempeño por sector</h3><div id="eBars"></div></div>
+      <div class="actions">
+        <button class="btn" id="eAgain" type="button">↻ Jugar de nuevo</button>
+        <button class="btn ghost" id="eShare" type="button"><span data-ic="share"></span> Compartir resultado</button>
+        <button class="btn ghost" id="eMenu" type="button">Menú principal</button>
+      </div>
+      <h3 class="rtitle">Para repasar</h3>
+      <div id="eReview"></div>
+      <footer><span data-ic="phone"></span> +591 79592149 · AP ACADEMY<br>Elaborado por <b>Lic. Kate L. Fernandez Saavedra</b></footer>
+    </div>
+  </section>
+
+  <!-- ============ OVERLAYS ============ -->
+  <div class="overlay" id="splash" hidden>
+    <div class="sp">
+      <div class="sp-ic" id="spIc"></div>
+      <div class="sp-k" id="spK"></div>
+      <h2 id="spT"></h2>
+      <p id="spS"></p>
+      <div class="sp-b" id="spB"></div>
+      <button class="btn big" id="spBtn" type="button"></button>
+    </div>
+  </div>
+
+  <div class="overlay" id="pauseOv" hidden>
+    <div class="sp">
+      <div class="sp-ic" data-ic="pause"></div>
+      <h2>Pausa</h2>
+      <p>La nave está en modo seguro.</p>
+      <button class="btn big" id="pResume" type="button"><span data-ic="play"></span> Continuar</button>
+      <button class="btn ghost" id="pQuit" type="button" style="margin-top:10px">Salir al menú</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="zoom" hidden></div>
+</div>
+
+<script src="questions.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
